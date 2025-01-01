@@ -23,7 +23,6 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
 
         // Day 1
         cfg.service(day1_cube);
-        cfg.route()
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));
