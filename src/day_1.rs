@@ -2,17 +2,16 @@ use actix_web::{get, web, HttpRequest, HttpResponse};
 use tracing::info;
 
 #[get("/1/{nums:.*}")]
-async fn day1_cube(
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> HttpResponse {
+async fn day1_cube(req: HttpRequest, path: web::Path<String>) -> HttpResponse {
     info!("> day1_cube {}", req.uri().path());
 
-    let n:Vec<i64> = path.into_inner().split('/')
+    let n: Vec<i64> = path
+        .into_inner()
+        .split('/')
         .filter_map(|s| s.parse::<i64>().ok())
         .collect();
 
-    let mut factor:i64 = 0;
+    let mut factor: i64 = 0;
     for i in n.iter() {
         factor ^= i;
     }
