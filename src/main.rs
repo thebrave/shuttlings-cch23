@@ -1,6 +1,7 @@
 mod day_0;
 mod day_1;
 mod day_4;
+mod day_5;
 
 use crate::day_0::{day0_error, day0_hello};
 use crate::day_1::day1_cube;
@@ -9,6 +10,7 @@ use actix_web::web::PathConfig;
 use actix_web::{error, get, web, web::ServiceConfig, HttpRequest, HttpResponse};
 use shuttle_actix_web::ShuttleActixWeb;
 use tracing::error;
+use crate::day_5::day5_page;
 
 async fn default_handler(req: HttpRequest) -> HttpResponse {
     error!("> default {:?} {:?}", req.method(), req.path());
@@ -28,6 +30,9 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
         // Day 4
         cfg.service(day4_strength);
         cfg.service(day4_contest);
+
+        // Day 5
+        cfg.service(day5_page);
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));
