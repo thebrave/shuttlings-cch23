@@ -103,7 +103,7 @@ async fn day7_bake(req: HttpRequest) -> HttpResponse {
         if *quantity == 0 {
             continue;
         }
-        
+
         let bef = out.pantry[ingredient];
         *(out.pantry.get_mut(ingredient).unwrap()) -= quantity * count as usize;
         info!("= {}: {} -> {}", ingredient, bef, out.pantry[ingredient]);

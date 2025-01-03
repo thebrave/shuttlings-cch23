@@ -24,9 +24,9 @@ async fn day11_redpixels(req: HttpRequest, form: MultipartForm<UploadForm>) -> H
     let bytes = &buf[..info.buffer_size()];
 
     let mut count = 0;
-    for i in 0..bytes.len()/3 {
-        let off= 3*i;
-        if bytes[off] as usize > bytes[off+1] as usize + bytes[off+2] as usize {
+    for i in 0..bytes.len() / 3 {
+        let off = 3 * i;
+        if bytes[off] as usize > bytes[off + 1] as usize + bytes[off + 2] as usize {
             count += 1;
         }
     }
