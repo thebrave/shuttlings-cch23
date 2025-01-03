@@ -3,14 +3,16 @@ mod day_1;
 mod day_4;
 mod day_5;
 mod day_6;
+mod day_7;
 
-use crate::day_0::{day0_error, day0_hello};
-use crate::day_1::day1_cube;
-use crate::day_4::{day4_contest, day4_strength};
-use crate::day_5::day5_page;
 use actix_web::web::PathConfig;
 use actix_web::{error, web, web::ServiceConfig, HttpRequest, HttpResponse};
+use day_0::{day0_error, day0_hello};
+use day_1::day1_cube;
+use day_4::{day4_contest, day4_strength};
+use day_5::day5_page;
 use day_6::day6_search;
+use day_7::day7_decode;
 use shuttle_actix_web::ShuttleActixWeb;
 use tracing::error;
 
@@ -38,6 +40,9 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
 
         // Day 6
         cfg.service(day6_search);
+
+        // Day 7
+        cfg.service(day7_decode);
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));

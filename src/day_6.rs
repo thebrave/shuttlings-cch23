@@ -1,6 +1,5 @@
 use actix_web::{post, HttpResponse};
 use serde::{Deserialize, Serialize};
-use tracing::info;
 
 #[derive(Serialize, Debug, PartialEq, Deserialize)]
 struct ElfSearch {

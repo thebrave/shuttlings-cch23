@@ -1902,6 +1902,7 @@ name = "shuttlings-cch23"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "base64 0.22.1",
  "serde",
  "shuttle-actix-web",
  "shuttle-runtime",
