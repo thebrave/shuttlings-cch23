@@ -12,7 +12,7 @@ use day_1::day1_cube;
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
-use day_7::day7_decode;
+use day_7::{day7_bake, day7_decode};
 use shuttle_actix_web::ShuttleActixWeb;
 use tracing::error;
 
@@ -43,6 +43,7 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
 
         // Day 7
         cfg.service(day7_decode);
+        cfg.service(day7_bake);
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));

@@ -1,6 +1,19 @@
+use std::collections::HashMap;
+
 use actix_web::{get, HttpRequest, HttpResponse};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use tracing::error;
+
+
+struct Recipe {
+    recipe: HashMap<String, usize>,
+    pantry: HashMap<String, usize>,
+}
+
+struct Output {
+    cookies: usize,
+    pantry: HashMap<String, usize>,
+}
 
 #[get("/7/decode")]
 async fn day7_decode(req: HttpRequest) -> HttpResponse {
@@ -23,4 +36,9 @@ async fn day7_decode(req: HttpRequest) -> HttpResponse {
             HttpResponse::BadRequest().finish()
         }
     }
+}
+
+#[get("/7/bake")]
+async fn day7_bake(req: HttpRequest) -> HttpResponse {
+    HttpResponse::Ok().finish()
 }
