@@ -5,7 +5,9 @@ mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
+mod day_11;
 
+use actix_files::Files;
 use actix_web::web::PathConfig;
 use actix_web::{error, web, web::ServiceConfig, HttpRequest, HttpResponse};
 use day_0::{day0_error, day0_hello};
@@ -17,6 +19,7 @@ use day_7::{day7_bake, day7_decode};
 use day_8::{day8_drop, day8_weight};
 use shuttle_actix_web::ShuttleActixWeb;
 use tracing::error;
+use crate::day_11::day11_redpixels;
 
 async fn default_handler(req: HttpRequest) -> HttpResponse {
     error!("> default {:?} {:?}", req.method(), req.path());
@@ -50,6 +53,10 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
         // Day 8
         cfg.service(day8_weight);
         cfg.service(day8_drop);
+
+        // Day 11
+        cfg.service(Files::new("/11/assets", "assets"));
+        cfg.service(day11_redpixels);
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));
