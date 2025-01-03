@@ -1,8 +1,6 @@
 use actix_web::{post, web, HttpResponse};
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::iter::Map;
-use tracing::callsite::rebuild_interest_cache;
 
 #[derive(Deserialize)]
 struct Info {
