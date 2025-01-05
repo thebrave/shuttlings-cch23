@@ -2,13 +2,13 @@ mod day_0;
 mod day_1;
 mod day_11;
 mod day_12;
+mod day_13;
 mod day_4;
 mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
 
-use crate::day_12::{day12_lsb, day12_ulid, Day12State};
 use actix_files::Files;
 use actix_web::web::PathConfig;
 use actix_web::{error, web, web::ServiceConfig, HttpRequest, HttpResponse};
@@ -16,12 +16,17 @@ use day_0::{day0_error, day0_hello};
 use day_1::day1_cube;
 use day_11::day11_redpixels;
 use day_12::{day12_load, day12_save};
+use day_12::{day12_lsb, day12_ulid, Day12State};
+use day_13::day13_popular;
+use day_13::day13_sql;
+use day_13::{day13_orders, day13_reset, day13_total};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
 use day_7::{day7_bake, day7_decode};
 use day_8::{day8_drop, day8_weight};
 use shuttle_actix_web::ShuttleActixWeb;
+use sqlx::PgPool;
 use std::collections::HashMap;
 use std::sync::Mutex;
 use tracing::error;
@@ -32,7 +37,14 @@ async fn default_handler(req: HttpRequest) -> HttpResponse {
 }
 
 #[shuttle_runtime::main]
-async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+async fn main(
+    #[shuttle_shared_db::Postgres] pool: PgPool,
+) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .expect("Failed to run migrations");
+
     let day_12_state = web::Data::new(Mutex::new(Day12State {
         store: HashMap::new(),
     }));
@@ -73,8 +85,16 @@ async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clon
         cfg.service(day12_ulid);
         cfg.service(day12_lsb);
 
+        // Day 13
+        cfg.service(day13_sql);
+        cfg.service(day13_reset);
+        cfg.service(day13_orders);
+        cfg.service(day13_total);
+        cfg.service(day13_popular);
+
         // App states
         cfg.app_data(day_12_state.clone());
+        cfg.app_data(web::Data::new(pool));
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));
