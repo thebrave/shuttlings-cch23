@@ -9,6 +9,7 @@ mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
+mod day_15;
 
 use actix_files::Files;
 use actix_web::web::PathConfig;
@@ -19,6 +20,7 @@ use day_11::day11_redpixels;
 use day_12::{day12_load, day12_lsb, day12_save, day12_ulid, Day12State};
 use day_13::{day13_orders, day13_popular, day13_reset, day13_sql, day13_total};
 use day_14::{day14_safe, day14_unsafe};
+use day_15::{day15_nice, day15_game};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -94,6 +96,10 @@ async fn main(
         // Day 14
         cfg.service(day14_safe);
         cfg.service(day14_unsafe);
+
+        // Day 15
+        cfg.service(day15_nice);
+        cfg.service(day15_game);
 
         // App states
         cfg.app_data(day_12_state.clone());
