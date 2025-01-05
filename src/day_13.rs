@@ -1,10 +1,8 @@
 use actix_web::{get, post, web, HttpResponse};
-use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::{Error, PgPool, Row};
 use tracing::{error, info};
-use uuid::Uuid;
 
 #[derive(sqlx::FromRow, Deserialize)]
 struct Order {

@@ -21,3 +21,4 @@ uuid = { version = "1.11.0", features = ["serde", "v4", "fast-rng"] }
 chrono = "0.4.39"
 shuttle-shared-db = { version = "0.49.0", features = ["sqlx", "postgres"] }
 sqlx = "0.8.3"
+htmlize = "1.0.5"

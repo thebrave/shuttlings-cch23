@@ -3,6 +3,7 @@ mod day_1;
 mod day_11;
 mod day_12;
 mod day_13;
+mod day_14;
 mod day_4;
 mod day_5;
 mod day_6;
@@ -15,11 +16,9 @@ use actix_web::{error, web, web::ServiceConfig, HttpRequest, HttpResponse};
 use day_0::{day0_error, day0_hello};
 use day_1::day1_cube;
 use day_11::day11_redpixels;
-use day_12::{day12_load, day12_save};
-use day_12::{day12_lsb, day12_ulid, Day12State};
-use day_13::day13_popular;
-use day_13::day13_sql;
-use day_13::{day13_orders, day13_reset, day13_total};
+use day_12::{day12_load, day12_lsb, day12_save, day12_ulid, Day12State};
+use day_13::{day13_orders, day13_popular, day13_reset, day13_sql, day13_total};
+use day_14::{day14_safe, day14_unsafe};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -91,6 +90,10 @@ async fn main(
         cfg.service(day13_orders);
         cfg.service(day13_total);
         cfg.service(day13_popular);
+
+        // Day 14
+        cfg.service(day14_safe);
+        cfg.service(day14_unsafe);
 
         // App states
         cfg.app_data(day_12_state.clone());

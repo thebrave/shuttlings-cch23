@@ -1,4 +1,4 @@
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use actix_web::{get, web, HttpResponse};
 
 #[get("/8/weight/{pokedex}")]
 async fn day8_weight(path: web::Path<u32>) -> HttpResponse {
