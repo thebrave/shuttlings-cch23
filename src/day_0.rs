@@ -1,4 +1,4 @@
-use actix_web::{get, HttpRequest, HttpResponse};
+use actix_web::{get, HttpResponse};
 
 #[get("/")]
 async fn day0_hello() -> HttpResponse {
@@ -6,6 +6,6 @@ async fn day0_hello() -> HttpResponse {
 }
 
 #[get("/-1/error")]
-async fn day0_error(req: HttpRequest) -> HttpResponse {
+async fn day0_error() -> HttpResponse {
     HttpResponse::InternalServerError().finish()
 }

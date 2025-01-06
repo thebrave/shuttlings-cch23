@@ -4,7 +4,6 @@ use std::collections::HashMap;
 
 #[derive(Deserialize)]
 struct Info {
-    name: String,
     strength: u32,
 }
 

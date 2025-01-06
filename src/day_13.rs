@@ -1,7 +1,7 @@
 use actix_web::{get, post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::{Error, PgPool, Row};
+use sqlx::{Error, PgPool};
 use tracing::{error, info};
 
 #[derive(sqlx::FromRow, Deserialize)]
@@ -60,7 +60,7 @@ async fn day13_orders(pool: web::Data<PgPool>, info: web::Json<Vec<Order>>) -> H
         .execute(db)
         .await
         {
-            Ok(qr) => {}
+            Ok(_) => {}
             Err(err) => {
                 error!("! Error while querying draft: {:?}", err);
                 return HttpResponse::InternalServerError().finish();
