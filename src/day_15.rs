@@ -1,6 +1,8 @@
 use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
+use sha256::digest;
 use tracing::info;
+use unic::emoji::char::is_emoji;
 
 #[derive(Deserialize)]
 struct Input {
@@ -63,7 +65,7 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
     info!("> game: {}", info.input);
 
     // Rule 1: must be at least 8 characters long
-    if info.input.len() != 8 {
+    if info.input.len() < 8 {
         return HttpResponse::BadRequest().json(ResultReason {
             result: "naughty".to_string(),
             reason: "8 chars".to_string(),
@@ -95,7 +97,7 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
     info.input.chars().for_each(|f| {
         if f.is_digit(10) {
             str.push(f);
-        } else {
+        } else if !str.is_empty() {
             sum += str.parse::<i32>().unwrap();
             str.clear();
         }
@@ -136,7 +138,7 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
                     state = Joy::Bad;
                 }
             }
-            _ => {}
+            _ => state = Joy::Bad,
         }
     });
     if state != Joy::Done {
@@ -146,7 +148,63 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
         });
     }
 
-    HttpResponse::BadRequest().json(Result {
+    // Rule 6: must contain a letter that repeats with exactly one other letter between them (like xyx)
+    let mut good = false;
+    for i in 3..info.input.chars().count() {
+        if info.input.chars().nth(i).unwrap().is_alphabetic()
+            && info.input.chars().nth(i - 1).unwrap().is_alphabetic()
+            && info.input.chars().nth(i - 2).unwrap().is_alphabetic()
+            && info.input.chars().nth(i - 2).unwrap() == info.input.chars().nth(i).unwrap()
+            && info.input.chars().nth(i - 1).unwrap() != info.input.chars().nth(i).unwrap()
+        {
+            good = true;
+            break;
+        }
+    }
+    if !good {
+        return HttpResponse::UnavailableForLegalReasons().json(ResultReason {
+            result: "naughty".to_string(),
+            reason: "illegal: no sandwich".to_string(),
+        });
+    }
+
+    // Rule 7: must contain at least one unicode character in the range [U+2980, U+2BFF]
+    if !info
+        .input
+        .chars()
+        .any(|f| f as u32 >= 0x2980 && f as u32 <= 0x2BFF)
+    {
+        return HttpResponse::RangeNotSatisfiable().json(ResultReason {
+            result: "naughty".to_string(),
+            reason: "outranged".to_string(),
+        });
+    }
+
+    // Rule 8: must contain at least one emoji
+    if !info.input.chars().any(|f| {
+        if is_emoji(f) {
+            info!("= is_emoji({:?})", f);
+            return true;
+        } else {
+            return false;
+        }
+    }) {
+        return HttpResponse::UpgradeRequired().json(ResultReason {
+            result: "naughty".to_string(),
+            reason: "😳".to_string(),
+        });
+    }
+
+    // Rule 9: the hexadecimal representation of the sha256 hash of the string must end with an a
+    if !digest(&info.input).ends_with('a') {
+        return HttpResponse::ImATeapot().json(ResultReason {
+            result: "naughty".to_string(),
+            reason: "not a coffee brewer".to_string(),
+        });
+    }
+
+    HttpResponse::BadRequest().json(ResultReason {
         result: "naughty".to_string(),
+        reason: "that's a nice password".to_string(),
     })
 }
