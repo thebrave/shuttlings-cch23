@@ -182,7 +182,7 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
 
     // Rule 8: must contain at least one emoji
     if !info.input.chars().any(|f| {
-        if is_emoji(f) {
+        if is_emoji(f) && !f.is_alphanumeric() {
             info!("= is_emoji({:?})", f);
             return true;
         } else {
@@ -203,8 +203,8 @@ async fn day15_game(info: web::Json<Input>) -> HttpResponse {
         });
     }
 
-    HttpResponse::BadRequest().json(ResultReason {
-        result: "naughty".to_string(),
+    HttpResponse::Ok().json(ResultReason {
+        result: "nice".to_string(),
         reason: "that's a nice password".to_string(),
     })
 }
