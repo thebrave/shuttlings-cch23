@@ -1,4 +1,4 @@
-use actix_web::{get, post, web, HttpResponse};
+use actix_web::{get, post, routes, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::{Error, PgPool};
@@ -45,7 +45,9 @@ async fn day13_reset(pool: web::Data<PgPool>) -> HttpResponse {
     }
 }
 
+#[routes]
 #[post("/13/orders")]
+#[post("/18/orders")]
 async fn day13_orders(pool: web::Data<PgPool>, info: web::Json<Vec<Order>>) -> HttpResponse {
     info!("> orders");
     let db = pool.get_ref();
