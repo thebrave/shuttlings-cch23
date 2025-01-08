@@ -6,6 +6,7 @@ mod day_13;
 mod day_14;
 mod day_15;
 mod day_18;
+mod day_19;
 mod day_4;
 mod day_5;
 mod day_6;
@@ -23,6 +24,7 @@ use day_13::{day13_orders, day13_popular, day13_reset, day13_sql, day13_total};
 use day_14::{day14_safe, day14_unsafe};
 use day_15::{day15_game, day15_nice};
 use day_18::{day18_region, day18_reset, day18_toplist, day18_total};
+use day_19::{day19_ping, day19_reset, day19_tweet, day19_views};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -108,6 +110,12 @@ async fn main(
         cfg.service(day18_region);
         cfg.service(day18_total);
         cfg.service(day18_toplist);
+
+        // Day 19
+        cfg.service(day19_ping);
+        cfg.service(day19_reset);
+        cfg.service(day19_views);
+        cfg.service(day19_tweet);
 
         // App states
         cfg.app_data(day_12_state.clone());
