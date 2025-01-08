@@ -1,7 +1,6 @@
 use actix_web::{get, post, web, HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use sqlx::{Error, PgPool};
+use sqlx::PgPool;
 use tracing::{error, info};
 
 #[derive(sqlx::FromRow, Deserialize)]
@@ -74,13 +73,13 @@ async fn day18_total(
     let db = pool.get_ref();
     let limit = path.into_inner();
     let mut out: Vec<TopList> = Vec::new();
-    match sqlx::query_as::<_, (i32, String)>("SELECT id, name FROM regions")
+    match sqlx::query_as::<_, (i32, String)>("SELECT id, name FROM regions ORDER BY name")
         .fetch_all(db)
         .await
     {
         Ok(sum) => {
             for (id, name) in sum {
-                match sqlx::query_as::<_, (String, )>("SELECT gift_name FROM orders WHERE region_id = $1 GROUP BY gift_name ORDER BY SUM(quantity) LIMIT $2")
+                match sqlx::query_as::<_, (String, )>("SELECT gift_name, SUM(quantity) FROM orders WHERE region_id = $1 GROUP BY gift_name ORDER BY SUM(quantity) DESC, gift_name ASC LIMIT $2")
                     .bind(id)
                     .bind(limit)
                     .fetch_all(db)
@@ -93,7 +92,7 @@ async fn day18_total(
                     }
                     Err(err) => match err {
                         sqlx::Error::RowNotFound => {
-                            let mut top_gifts:Vec<String>= Vec::new();
+                            let top_gifts:Vec<String>= Vec::new();
                             out.push(TopList{ region: name, top_gifts })},
                         _ => {
                             error!("! Error while querying draft: {:?}", err);
