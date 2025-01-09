@@ -24,7 +24,7 @@ use day_13::{day13_orders, day13_popular, day13_reset, day13_sql, day13_total};
 use day_14::{day14_safe, day14_unsafe};
 use day_15::{day15_game, day15_nice};
 use day_18::{day18_region, day18_reset, day18_toplist, day18_total};
-use day_19::{day19_ping, day19_reset, day19_tweet, day19_views};
+use day_19::{day19_ping, day19_reset, day19_tweet, day19_views, Day19State};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -52,6 +52,10 @@ async fn main(
 
     let day_12_state = web::Data::new(Mutex::new(Day12State {
         store: HashMap::new(),
+    }));
+    let day_19_state = web::Data::new(Mutex::new(Day19State {
+        views: 0,
+        sessions: HashMap::new(),
     }));
 
     let config = move |cfg: &mut ServiceConfig| {
@@ -120,6 +124,7 @@ async fn main(
         // App states
         cfg.app_data(day_12_state.clone());
         cfg.app_data(web::Data::new(pool));
+        cfg.app_data(day_19_state.clone());
 
         // Default handler (for debug)
         cfg.default_service(web::route().to(default_handler));
