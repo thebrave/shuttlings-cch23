@@ -8,9 +8,9 @@ use actix_ws::{AggregatedMessage, Session};
 use futures_util::StreamExt as _;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
-use tracing::info;
+use tracing::{error, info};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct InputMessage {
     message: String,
 }
@@ -23,7 +23,7 @@ struct BroadcastMessage {
 
 pub struct Day19State {
     pub(crate) views: usize,
-    pub(crate) sessions: HashMap<usize, HashSet<Session>>,
+    pub(crate) sessions: HashMap<usize, HashSet<(Session, String)>>,
 }
 
 #[get("/19/ws/ping")]
@@ -79,11 +79,13 @@ async fn day19_reset(data: web::Data<Mutex<Day19State>>, req: HttpRequest) -> Ht
 }
 
 #[get("/19/views")]
-async fn day19_views(
-    req: HttpRequest
-) -> HttpResponse {
+async fn day19_views(data: web::Data<Mutex<Day19State>>, req: HttpRequest) -> HttpResponse {
     info!("> {}", req.path());
-    HttpResponse::InternalServerError().finish()
+
+    match data.lock() {
+        Ok(mut state) => HttpResponse::Ok().body(state.views.to_string()),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 #[get("/19/ws/room/{number}/user/{string}")]
@@ -119,11 +121,17 @@ async fn day19_tweet(
         while let Some(msg) = stream.next().await {
             match msg {
                 Ok(AggregatedMessage::Text(text)) => {
+                    info!("= received data: {}", &text);
                     let cmd: InputMessage = serde_json::from_str(&text).unwrap();
                     let mut state = match data.lock() {
                         Ok(state) => state,
-                        Err(_) => return,
+                        Err(err) => {
+                            error!("! failed to parse data: {:?}", err);
+                            return;
+                        }
                     };
+
+                    info!("= received data: {:?}", &cmd);
                     state.views += 1;
                     let bm = BroadcastMessage {
                         user: user.clone(),
@@ -133,8 +141,10 @@ async fn day19_tweet(
 
                     match state.sessions.get(&number) {
                         Some(sessions) => {
-                            for session in sessions {
+                            for (session, user) in sessions {
+                                info!("= sending to {}", &user);
                                 session.clone().text(out.clone()).await.unwrap();
+                                info!("= sending to {} -> done", &user);
                             }
                         }
                         _ => {}

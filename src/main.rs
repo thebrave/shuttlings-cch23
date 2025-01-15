@@ -7,6 +7,7 @@ mod day_14;
 mod day_15;
 mod day_18;
 mod day_19;
+mod day_22;
 mod day_4;
 mod day_5;
 mod day_6;
@@ -14,7 +15,7 @@ mod day_7;
 mod day_8;
 
 use actix_files::Files;
-use actix_web::web::PathConfig;
+use actix_web::web::{PathConfig, PayloadConfig};
 use actix_web::{error, web, web::ServiceConfig, HttpRequest, HttpResponse};
 use day_0::{day0_error, day0_hello};
 use day_1::day1_cube;
@@ -25,6 +26,7 @@ use day_14::{day14_safe, day14_unsafe};
 use day_15::{day15_game, day15_nice};
 use day_18::{day18_region, day18_reset, day18_toplist, day18_total};
 use day_19::{day19_ping, day19_reset, day19_tweet, day19_views, Day19State};
+use day_22::{day22_integers, day22_rocket};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -121,6 +123,10 @@ async fn main(
         cfg.service(day19_views);
         cfg.service(day19_tweet);
 
+        // Day 22
+        cfg.service(day22_integers);
+        cfg.service(day22_rocket);
+
         // App states
         cfg.app_data(day_12_state.clone());
         cfg.app_data(web::Data::new(pool));
@@ -132,6 +138,7 @@ async fn main(
             error!("! {} failed because {}", req.uri().path(), err);
             error::InternalError::from_response(err, HttpResponse::Conflict().into()).into()
         }));
+        cfg.app_data(PayloadConfig::new(1_000_000));
     };
 
     Ok(config.into())
