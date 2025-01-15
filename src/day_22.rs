@@ -32,7 +32,8 @@ async fn day22_integers(req: HttpRequest, stream: String) -> HttpResponse {
         }
         None => {
             info!("< no unique number");
-            HttpResponse::NotFound().finish()},
+            HttpResponse::NotFound().finish()
+        }
     }
 }
 

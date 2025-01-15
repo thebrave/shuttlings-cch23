@@ -7,6 +7,7 @@ mod day_14;
 mod day_15;
 mod day_18;
 mod day_19;
+mod day_20;
 mod day_21;
 mod day_22;
 mod day_4;
@@ -27,8 +28,9 @@ use day_14::{day14_safe, day14_unsafe};
 use day_15::{day15_game, day15_nice};
 use day_18::{day18_region, day18_reset, day18_toplist, day18_total};
 use day_19::{day19_ping, day19_reset, day19_tweet, day19_views, Day19State};
-use day_22::{day22_integers, day22_rocket};
+use day_20::{day20_number_files, day20_size_files};
 use day_21::{day21_coords, day21_country};
+use day_22::{day22_integers, day22_rocket};
 use day_4::{day4_contest, day4_strength};
 use day_5::day5_page;
 use day_6::day6_search;
@@ -124,6 +126,10 @@ async fn main(
         cfg.service(day19_reset);
         cfg.service(day19_views);
         cfg.service(day19_tweet);
+
+        // Day 20
+        cfg.service(day20_number_files);
+        cfg.service(day20_size_files);
 
         // Day 22
         cfg.service(day22_integers);
