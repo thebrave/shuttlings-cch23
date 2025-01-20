@@ -2782,7 +2782,7 @@ dependencies = [
  "rmp-serde",
  "serde",
  "serde_json",
- "shuttle-common",
+ "shuttle-common 0.49.0",
  "tokio",
  "tokio-tungstenite",
  "url",
@@ -2833,6 +2833,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "shuttle-common"
+version = "0.50.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "709313a6ac5aa68df4793b6c733c2fc554aa298bdafdc193d8386131bab17480"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "comfy-table",
+ "crossterm 0.27.0",
+ "http 0.2.12",
+ "semver",
+ "serde",
+ "serde_json",
+ "strum 0.26.3",
+ "thiserror 2.0.9",
+ "tracing",
+ "tracing-subscriber",
+ "typeshare",
+ "url",
+ "uuid",
+ "zeroize",
+]
+
+[[package]]
 name = "shuttle-proto"
 version = "0.49.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2841,7 +2865,7 @@ dependencies = [
  "futures-core",
  "prost",
  "prost-types",
- "shuttle-common",
+ "shuttle-common 0.49.0",
  "tonic",
 ]
 
@@ -2858,9 +2882,9 @@ dependencies = [
  "serde_json",
  "shuttle-api-client",
  "shuttle-codegen",
- "shuttle-common",
+ "shuttle-common 0.49.0",
  "shuttle-proto",
- "shuttle-service",
+ "shuttle-service 0.49.0",
  "strfmt",
  "tokio",
  "tokio-stream",
@@ -2879,22 +2903,36 @@ dependencies = [
  "anyhow",
  "async-trait",
  "serde",
- "shuttle-common",
+ "shuttle-common 0.49.0",
+ "strfmt",
+ "thiserror 2.0.9",
+]
+
+[[package]]
+name = "shuttle-service"
+version = "0.50.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ca5dcd25164380881233e676bd897de629a7d719bf02214c1b6ba16a2d2079c9"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "serde",
+ "shuttle-common 0.50.0",
  "strfmt",
  "thiserror 2.0.9",
 ]
 
 [[package]]
 name = "shuttle-shared-db"
-version = "0.49.0"
+version = "0.50.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aeb87f86f196570fb30c87fac722c78cd8852e63a570722c4f579d8acc0fb8d6"
+checksum = "cb0fd4bf3ce53efb1e65a224de690983fd8b6ba3131fe83584d62bf3c1babb5a"
 dependencies = [
  "async-trait",
  "diesel-async",
  "serde",
  "serde_json",
- "shuttle-service",
+ "shuttle-service 0.50.0",
  "sqlx",
 ]
 
